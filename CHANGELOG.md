@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.1.0](https://github.com/Koenkk/zigbee2mqtt/compare/2.0.0...2.1.0) (2025-01-08)
+
+
+### Features
+
+* Add a settings option to log to console in json format ([#25649](https://github.com/Koenkk/zigbee2mqtt/issues/25649)) ([26ef565](https://github.com/Koenkk/zigbee2mqtt/commit/26ef565c8a20d1b6c2e09c679eb96d3f56811a87))
+* Allow Home Assistant OTA Update entity to show progress while updating ([#25632](https://github.com/Koenkk/zigbee2mqtt/issues/25632)) ([318dc04](https://github.com/Koenkk/zigbee2mqtt/commit/318dc0413284d204d13a99afd400a5f00f5ef338))
+
+
+### Bug Fixes
+
+* Add semver tags to Docker releases ([#25530](https://github.com/Koenkk/zigbee2mqtt/issues/25530)) ([0d30eb5](https://github.com/Koenkk/zigbee2mqtt/commit/0d30eb553b9cb027f8ae5424b9e740136742f74c))
+* Container: remove modifying capabilities of `/usr/bin/node` ([#25456](https://github.com/Koenkk/zigbee2mqtt/issues/25456)) ([43a5b24](https://github.com/Koenkk/zigbee2mqtt/commit/43a5b24dcc22af3ec4c0bb76b45a2706f898421f))
+* Enable use of MQTT username without password  ([#25611](https://github.com/Koenkk/zigbee2mqtt/issues/25611)) ([a28a5ba](https://github.com/Koenkk/zigbee2mqtt/commit/a28a5baf17b8dd3fe4703cdb38d80796157521af))
+* **ignore:** update dependencies ([#25535](https://github.com/Koenkk/zigbee2mqtt/issues/25535)) ([6f3524b](https://github.com/Koenkk/zigbee2mqtt/commit/6f3524b251ed8218ffed132df262eb0850687e61))
+* Remove invalid `warn` `log_level` https://github.com/nurikk/zigbee2mqtt-frontend/issues/2369 ([#25634](https://github.com/Koenkk/zigbee2mqtt/issues/25634)) ([1667ba6](https://github.com/Koenkk/zigbee2mqtt/commit/1667ba64ac2b8272cb0dea7ce30e459450e1c847))
+
 ## [2.0.0](https://github.com/Koenkk/zigbee2mqtt/compare/1.42.0...2.0.0) (2025-01-03)
 
 
