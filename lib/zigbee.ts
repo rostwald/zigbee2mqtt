@@ -223,12 +223,8 @@ export default class Zigbee {
         logger.info('Stopped zigbee-herdsman');
     }
 
-    getPermitJoin(): boolean {
-        return this.herdsman.getPermitJoin();
-    }
-
-    getPermitJoinEnd(): number | undefined {
-        return this.herdsman.getPermitJoinEnd();
+    getPermitJoinTimeout(): number {
+        return this.herdsman.getPermitJoinTimeout();
     }
 
     async permitJoin(time: number, device?: Device): Promise<void> {

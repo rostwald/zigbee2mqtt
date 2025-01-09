@@ -1123,27 +1123,22 @@ export const mockController = {
     on: (type: string, handler: EventHandler): void => {
         events[type] = handler;
     },
-    start: vi.fn((): Promise<AdapterTypes.StartResult> => Promise.resolve('reset')),
-    stop: vi.fn(),
-    touchlinkIdentify: vi.fn(),
-    touchlinkScan: vi.fn(),
-    touchlinkFactoryReset: vi.fn(),
-    touchlinkFactoryResetFirst: vi.fn(),
-    addInstallCode: vi.fn(),
-    permitJoin: vi.fn(),
-    getPermitJoin: vi.fn((): boolean => false),
-    getPermitJoinEnd: vi.fn((): number | undefined => undefined),
-    isStopping: vi.fn((): boolean => false),
-    backup: vi.fn(),
-    coordinatorCheck: vi.fn(),
-    getCoordinatorVersion: vi.fn(
-        (): Promise<AdapterTypes.CoordinatorVersion> => Promise.resolve({type: 'z-Stack', meta: {version: 1, revision: 20190425}}),
-    ),
-    getNetworkParameters: vi.fn(
-        (): Promise<AdapterTypes.NetworkParameters> => Promise.resolve({panID: 0x162a, extendedPanID: '0x64c5fd698daf0c00', channel: 15}),
-    ),
-    getDevices: vi.fn((): Device[] => []),
-    getDevicesIterator: vi.fn(function* (predicate?: (value: Device) => boolean): Generator<Device> {
+    start: jest.fn((): Promise<StartResult> => Promise.resolve('reset')),
+    stop: jest.fn(),
+    touchlinkIdentify: jest.fn(),
+    touchlinkScan: jest.fn(),
+    touchlinkFactoryReset: jest.fn(),
+    touchlinkFactoryResetFirst: jest.fn(),
+    addInstallCode: jest.fn(),
+    permitJoin: jest.fn(),
+    getPermitJoinTimeout: jest.fn((): number => 0),
+    isStopping: jest.fn((): boolean => false),
+    backup: jest.fn(),
+    coordinatorCheck: jest.fn(),
+    getCoordinatorVersion: jest.fn((): Promise<CoordinatorVersion> => Promise.resolve({type: 'z-Stack', meta: {version: 1, revision: 20190425}})),
+    getNetworkParameters: jest.fn((): Promise<NetworkParameters> => Promise.resolve({panID: 0x162a, extendedPanID: 0x001122, channel: 15})),
+    getDevices: jest.fn((): Device[] => []),
+    getDevicesIterator: jest.fn(function* (predicate?: (value: Device) => boolean): Generator<Device> {
         for (const key in devices) {
             const device = devices[key as keyof typeof devices];
 
