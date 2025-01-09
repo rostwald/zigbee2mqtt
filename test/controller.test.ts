@@ -98,7 +98,7 @@ describe('Controller', () => {
         expect(mockZHController.start).toHaveBeenCalledTimes(1);
         expect(mockLogger.info).toHaveBeenCalledWith(`Currently ${Object.values(devices).length - 1} devices are joined.`);
         expect(mockLogger.info).toHaveBeenCalledWith(
-            'bulb (0x000b57fffec6a5b2): LED1545G12 - IKEA TRADFRI bulb E26/E27, white spectrum, globe, opal, 980 lm (Router)',
+        'bulb (0x000b57fffec6a5b2): LED1545G12 - IKEA TRADFRI bulb E26/E27, white spectrum, globe, opal, 980 lm (Router)',
         );
         expect(mockLogger.info).toHaveBeenCalledWith('remote (0x0017880104e45517): 324131092621 - Philips Hue dimmer switch (EndDevice)');
         expect(mockLogger.info).toHaveBeenCalledWith('0x0017880104e45518 (0x0017880104e45518): Not supported (EndDevice)');
@@ -113,6 +113,15 @@ describe('Controller', () => {
             {retain: true, qos: 0},
         );
         expect(mockMQTTPublishAsync).toHaveBeenCalledWith('zigbee2mqtt/remote', stringify({brightness: 255}), {retain: true, qos: 0});
+    });
+
+    it('Start controller when permit join fails', async () => {
+        zigbeeHerdsman.permitJoin.mockImplementationOnce(() => {
+            throw new Error('failed!');
+        });
+        await controller.start();
+        expect(zigbeeHerdsman.permitJoin).toHaveBeenCalledTimes(1);
+        expect(MQTT.connect).toHaveBeenCalledTimes(1);
     });
 
     it('Start controller with specific MQTT settings', async () => {
@@ -287,6 +296,13 @@ describe('Controller', () => {
         expect(mockLogger.error).toHaveBeenCalledWith('MQTT failed to connect, exiting... (addr not found)');
         expect(mockExit).toHaveBeenCalledTimes(1);
         expect(mockExit).toHaveBeenCalledWith(1, false);
+    });
+
+    it('Start controller with permit join true', async () => {
+        settings.set(['permit_join'], false);
+        await controller.start();
+        expect(zigbeeHerdsman.permitJoin).toHaveBeenCalledTimes(1);
+        expect(zigbeeHerdsman.permitJoin).toHaveBeenCalledWith(false, undefined, undefined);
     });
 
     it('Start controller and stop with restart', async () => {

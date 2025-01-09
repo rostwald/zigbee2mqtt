@@ -27,24 +27,9 @@ const ajvRestartRequiredDeviceOptions = new Ajv({allErrors: true})
 const ajvRestartRequiredGroupOptions = new Ajv({allErrors: true})
     .addKeyword({keyword: 'requiresRestart', validate: (s: unknown) => !s})
     .compile(schemaJson.definitions.group);
-export const defaults: RecursivePartial<Settings> = {
-    homeassistant: {
-        enabled: false,
-        discovery_topic: 'homeassistant',
-        status_topic: 'homeassistant/status',
-        legacy_action_sensor: false,
-        experimental_event_entities: false,
-    },
-    availability: {
-        enabled: false,
-        active: {timeout: 10},
-        passive: {timeout: 1500},
-    },
-    frontend: {
-        enabled: false,
-        port: 8080,
-        base_url: '/',
-    },
+const defaults: RecursivePartial<Settings> = {
+    permit_join: false,
+    external_converters: [],
     mqtt: {
         base_topic: 'zigbee2mqtt',
         include_device_information: false,

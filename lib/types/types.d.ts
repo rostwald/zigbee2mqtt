@@ -96,8 +96,8 @@ declare global {
             experimental_event_entities: boolean;
             legacy_action_sensor: boolean;
         };
-        availability: {
-            enabled: boolean;
+        permit_join: boolean;
+        availability?: {
             active: {timeout: number};
             passive: {timeout: number};
         };

@@ -15,7 +15,8 @@ const devicesFile2 = mockedData.joinPath('devices2.yaml');
 const groupsFile = mockedData.joinPath('groups.yaml');
 const secretFile = mockedData.joinPath('secret.yaml');
 const minimalConfig = {
-    homeassistant: {enabled: true},
+    permit_join: true,
+    homeassistant: true,
     mqtt: {base_topic: 'zigbee2mqtt', server: 'localhost'},
 };
 
@@ -919,7 +920,7 @@ describe('Settings', () => {
             },
         });
         settings.reRead();
-        settings.apply({external_converters: []});
+        settings.apply({permit_join: false});
         expect(settings.get().device_options.homeassistant).toStrictEqual({temperature: null});
         expect(settings.get().devices['0x1234567812345678'].homeassistant).toStrictEqual({humidity: null});
     });

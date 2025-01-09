@@ -295,6 +295,7 @@ describe('Extension: Bridge', () => {
                         update_check_interval: 1440,
                     },
                     passlist: [],
+                    permit_join: true,
                     serial: {disable_led: false, port: '/dev/dummy'},
                 },
                 config_schema: settings.schemaJson,
@@ -2703,6 +2704,21 @@ describe('Extension: Bridge', () => {
         );
     });
 
+    it('Should allow permit join for certain time', async () => {
+        zigbeeHerdsman.permitJoin.mockClear();
+        MQTT.publish.mockClear();
+        MQTT.events.message('zigbee2mqtt/bridge/request/permit_join', stringify({value: false, time: 10}));
+        await flushPromises();
+        expect(zigbeeHerdsman.permitJoin).toHaveBeenCalledTimes(1);
+        expect(zigbeeHerdsman.permitJoin).toHaveBeenCalledWith(false, undefined, 10);
+        expect(MQTT.publish).toHaveBeenCalledWith(
+            'zigbee2mqtt/bridge/response/permit_join',
+            stringify({data: {value: false, time: 10}, status: 'ok'}),
+            {retain: false, qos: 0},
+            expect.any(Function),
+        );
+    });
+
     it('Should republish bridge info when permit join changes', async () => {
         mockMQTTPublishAsync.mockClear();
         await mockZHEvents.permitJoinChanged({permitted: false, timeout: 10});
@@ -2727,10 +2743,9 @@ describe('Extension: Bridge', () => {
         expect(mockZHController.permitJoin).toHaveBeenCalledWith(123, device);
         expect(mockMQTTPublishAsync).toHaveBeenCalledWith(
             'zigbee2mqtt/bridge/response/permit_join',
-            stringify({data: {time: 123, device: 'bulb'}, status: 'ok'}),
+            stringify({data: {value: true, device: 'bulb'}, status: 'ok'}),
             {retain: false, qos: 0},
         );
-    });
 
     it('Should not allow permit join via non-existing device', async () => {
         mockMQTTPublishAsync.mockClear();
@@ -2750,7 +2765,7 @@ describe('Extension: Bridge', () => {
         await flushPromises();
         expect(mockMQTTPublishAsync).toHaveBeenCalledWith(
             'zigbee2mqtt/bridge/response/permit_join',
-            stringify({data: {time: 0}, status: 'ok', transaction: 22}),
+            stringify({data: {value: false}, status: 'ok', transaction: 22}),
             {retain: false, qos: 0},
         );
     });
@@ -3776,6 +3791,24 @@ describe('Extension: Bridge', () => {
         });
     });
 
+    it('Change options', async () => {
+        zigbeeHerdsman.permitJoin.mockClear();
+        settings.apply({permit_join: false});
+        MQTT.publish.mockClear();
+        MQTT.events.message('zigbee2mqtt/bridge/request/options', stringify({options: {permit_join: true}}));
+        await flushPromises();
+        expect(settings.get().permit_join).toBe(true);
+        expect(zigbeeHerdsman.permitJoin).toHaveBeenCalledTimes(1);
+        expect(zigbeeHerdsman.permitJoin).toHaveBeenCalledWith(true, undefined, undefined);
+        expect(MQTT.publish).toHaveBeenCalledWith('zigbee2mqtt/bridge/info', expect.any(String), {retain: true, qos: 0}, expect.any(Function));
+        expect(MQTT.publish).toHaveBeenCalledWith(
+            'zigbee2mqtt/bridge/response/options',
+            stringify({data: {restart_required: false}, status: 'ok'}),
+            {retain: false, qos: 0},
+            expect.any(Function),
+        );
+    });
+
     it('Change options and apply - homeassistant', async () => {
         // @ts-expect-error private
         expect(controller.extensions.find((e) => e.constructor.name === 'HomeAssistant')).toBeUndefined();
@@ -3851,6 +3884,7 @@ describe('Extension: Bridge', () => {
     });
 
     it('Change options restart required', async () => {
+        zigbeeHerdsman.permitJoin.mockClear();
         settings.apply({serial: {port: '123'}});
         mockMQTTPublishAsync.mockClear();
         mockMQTTEvents.message('zigbee2mqtt/bridge/request/options', stringify({options: {serial: {port: '/dev/newport'}}}));
@@ -3864,6 +3898,7 @@ describe('Extension: Bridge', () => {
     });
 
     it('Change options array', async () => {
+        zigbeeHerdsman.permitJoin.mockClear();
         expect(settings.get().advanced.ext_pan_id).toStrictEqual([221, 221, 221, 221, 221, 221, 221, 221]);
         mockMQTTPublishAsync.mockClear();
         mockMQTTEvents.message(
@@ -3880,6 +3915,7 @@ describe('Extension: Bridge', () => {
     });
 
     it('Change options with null', async () => {
+        zigbeeHerdsman.permitJoin.mockClear();
         expect(settings.get().serial).toStrictEqual({disable_led: false, port: '/dev/dummy'});
         mockMQTTPublishAsync.mockClear();
         mockMQTTEvents.message('zigbee2mqtt/bridge/request/options', stringify({options: {serial: {disable_led: false, port: null}}}));

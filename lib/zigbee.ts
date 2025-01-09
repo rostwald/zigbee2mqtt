@@ -223,18 +223,26 @@ export default class Zigbee {
         logger.info('Stopped zigbee-herdsman');
     }
 
-    getPermitJoinTimeout(): number {
+    getPermitJoin(): boolean {
+        return this.herdsman.getPermitJoin();
+    }
+
+    getPermitJoinTimeout(): number | undefined {
         return this.herdsman.getPermitJoinTimeout();
     }
 
-    async permitJoin(time: number, device?: Device): Promise<void> {
-        if (time > 0) {
+    async permitJoin(permit: boolean, device?: Device, time?: number): Promise<void> {
+        if (permit) {
             logger.info(`Zigbee: allowing new devices to join${device ? ` via ${device.name}` : ''}.`);
         } else {
             logger.info('Zigbee: disabling joining new devices.');
         }
 
-        await this.herdsman.permitJoin(time, device?.zh);
+        if (device && permit) {
+            await this.herdsman.permitJoin(permit, device.zh, time);
+        } else {
+            await this.herdsman.permitJoin(permit, undefined, time);
+        }
     }
 
     async resolveDevicesDefinitions(ignoreCache: boolean = false): Promise<void> {
